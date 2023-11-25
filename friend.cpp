@@ -2,11 +2,13 @@
 #include "protocol.h"
 #include "tcpclient.h"
 #include <QInputDialog>
-
+#include "privatechat.h"
+#include <QMessageBox>
 
 Friend::Friend(QWidget *parent) : QWidget(parent)
 {
     m_pShowMsgTE = new QTextEdit;
+    m_pShowMsgTE->setReadOnly(true);
     m_pFriendListWidget = new QListWidget;
     m_pInputMsgLE = new QLineEdit;
 
@@ -53,6 +55,12 @@ Friend::Friend(QWidget *parent) : QWidget(parent)
 
     connect(m_pDelFriendPB,SIGNAL(clicked(bool))
             ,this,SLOT(delFriend()));
+    connect(m_pPrivateChatPB,SIGNAL(clicked(bool))
+            ,this,SLOT(privateChat()));
+    connect(m_pMsgSendPB,SIGNAL(clicked(bool))
+            ,this,SLOT(groupChat()));
+
+
 }
 
 void Friend::showAllOnlineUsr(PDU *pdu)
@@ -76,6 +84,13 @@ void Friend::updateFriendList(PDU *pdu)
         memcpy(caName,(char*)pdu->caMsg+i*32,32);
         m_pFriendListWidget->addItem(caName);
     }
+}
+
+void Friend::updateGroupMsg(PDU *pdu)
+{
+
+    QString strMsg = QString("%1 says: %2").arg(pdu->caData).arg((char*)pdu->caMsg);
+    m_pShowMsgTE->append(strMsg);
 }
 
 void Friend::showOnline()
@@ -109,8 +124,6 @@ void Friend::searchUsr()
         TcpClient::getInstance().getTcpSocket().write((char*)pdu,pdu->uiPDULen);
         free(pdu);
         pdu = NULL;
-
-
     }
     else{
 
@@ -130,5 +143,55 @@ void Friend::flushFriend()
 
 void Friend::delFriend()
 {
-    m_pFriendListWidget->currentItem();
+    if(NULL!=m_pFriendListWidget->currentItem()){
+        QString strFriendName = m_pFriendListWidget->currentItem()->text();
+        PDU *pdu = mkPDU(0);
+        pdu->uiMsgType = ENUM_MSG_TYPE_DELETE_FRIEND_REQUEST;
+        QString strSelfName = TcpClient::getInstance().loginName();
+
+        memcpy(pdu->caData,strSelfName.toStdString().c_str(),strSelfName.size());
+        memcpy(pdu->caData+32,strFriendName.toStdString().c_str(),strFriendName.size());
+        TcpClient::getInstance().getTcpSocket().write((char*)pdu,pdu->uiPDULen);
+        free(pdu);
+        pdu = NULL;
+    }
+
 }
+
+void Friend::privateChat()
+{
+    if(NULL!=m_pFriendListWidget->currentItem()){
+        QString strChatName = m_pFriendListWidget->currentItem()->text();
+        PrivateChat::getInstance().setChatName(strChatName);
+        if(PrivateChat::getInstance().isHidden()){
+            PrivateChat::getInstance().show();
+        }
+
+
+    }else {
+        QMessageBox::warning(this,"private chat","please select the person you wanna chat");
+    }
+}
+
+void Friend::groupChat()
+{
+    QString strMsg = m_pInputMsgLE->text();
+    m_pInputMsgLE->clear();
+
+    if(strMsg!=NULL)
+    {
+         PDU *pdu = mkPDU(strMsg.size()+1);
+         pdu->uiMsgType = ENUM_MSG_TYPE_GROUP_CHAT_REQUEST;
+         QString strName = TcpClient::getInstance().loginName();
+         strncpy(pdu->caData,strName.toStdString().c_str(),strName.size());
+         strncpy((char*)pdu->caMsg,strMsg.toStdString().c_str(),strMsg.size());
+         TcpClient::getInstance().getTcpSocket().write((char*)pdu,pdu->uiPDULen);
+         free(pdu);
+         pdu = NULL;
+    }
+    else
+    {
+        QMessageBox::warning(this,"Group Chat ","send msg is NULL");
+    }
+}
+

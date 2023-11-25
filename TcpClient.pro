@@ -15,7 +15,8 @@ SOURCES += \
     opewidget.cpp \
     online.cpp \
     friend.cpp \
-    book.cpp
+    book.cpp \
+    privatechat.cpp
 
 HEADERS += \
     protocol.h \
@@ -23,11 +24,13 @@ HEADERS += \
     opewidget.h \
     online.h \
     friend.h \
-    book.h
+    book.h \
+    privatechat.h
 
 FORMS += \
     tcpclient.ui \
-    online.ui
+    online.ui \
+    privatechat.ui
 
 TRANSLATIONS += \
     TcpClient_zh_CN.ts

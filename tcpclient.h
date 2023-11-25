@@ -42,7 +42,6 @@ private:
     QString m_strIP;
     quint16 m_usPort;
 
-
     //链接服务器，与服务器进行数据交互
     QTcpSocket m_tcpSocket;
     QString m_strLoginName;

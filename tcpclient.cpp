@@ -6,6 +6,8 @@
 #include <QHostAddress>
 #include "protocol.h"
 #include "friend.h"
+#include "privatechat.h"
+
 
 TcpClient::TcpClient(QWidget *parent)
     : QWidget(parent)
@@ -187,6 +189,38 @@ void TcpClient::recvMsg()
    case ENUM_MSG_TYPE_FLUSH_FRIEND_RESPONSE:
    {
         OpeWidget::getInstance().getFriend()->updateFriendList(pdu);
+
+       break;
+   }
+   case ENUM_MSG_TYPE_DELETE_FRIEND_REQUEST:
+   {
+       char caName[32] = {'\0'};
+       memcpy(caName,pdu->caData,32);
+       QMessageBox::information(this,"Delete Friend",QString("%1 delete you as his friend").arg(caName));
+       break;
+   }
+   case ENUM_MSG_TYPE_DELETE_FRIEND_RESPONSE:
+   {
+       QMessageBox::information(this,"Delete Friend","DELETE FRIEND OK");
+       break;
+   }
+   case ENUM_MSG_TYPE_PRIVATE_CHAT_REQUEST:
+   {
+       if(PrivateChat::getInstance().isHidden()){
+           char caSendName[32] = {'\0'};
+           memcpy(caSendName,pdu->caData,32);
+           QString strSendName = caSendName;
+           PrivateChat::getInstance().setChatName(strSendName);
+           PrivateChat::getInstance().show();
+
+       }
+       PrivateChat::getInstance().updateMsg(pdu);
+       break;
+   }
+   case ENUM_MSG_TYPE_GROUP_CHAT_REQUEST:
+   {
+       OpeWidget::getInstance().getFriend()->updateGroupMsg(pdu);
+
 
        break;
    }
