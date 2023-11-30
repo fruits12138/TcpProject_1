@@ -16,12 +16,15 @@ public:
     explicit OpeWidget(QWidget *parent = nullptr);
     static OpeWidget &getInstance();
     Friend *getFriend();
+    Book *getBook();
 
 signals:
 
 public slots:
+
 private:
     QListWidget *m_pListWidget;
+
     Friend *m_pFriend;
     Book *m_pBook;
 

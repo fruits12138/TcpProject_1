@@ -59,7 +59,8 @@ Friend::Friend(QWidget *parent) : QWidget(parent)
             ,this,SLOT(privateChat()));
     connect(m_pMsgSendPB,SIGNAL(clicked(bool))
             ,this,SLOT(groupChat()));
-
+    connect(m_pInputMsgLE,SIGNAL(returnPressed())
+            ,this,SLOT(enterPressed()));
 
 }
 
@@ -195,3 +196,30 @@ void Friend::groupChat()
     }
 }
 
+void Friend::enterPressed()
+{
+    QString strMsg = m_pInputMsgLE->text();
+    m_pInputMsgLE->clear();
+
+    if(strMsg!=NULL)
+    {
+         PDU *pdu = mkPDU(strMsg.size()+1);
+         pdu->uiMsgType = ENUM_MSG_TYPE_GROUP_CHAT_REQUEST;
+         QString strName = TcpClient::getInstance().loginName();
+         strncpy(pdu->caData,strName.toStdString().c_str(),strName.size());
+         strncpy((char*)pdu->caMsg,strMsg.toStdString().c_str(),strMsg.size());
+         TcpClient::getInstance().getTcpSocket().write((char*)pdu,pdu->uiPDULen);
+         free(pdu);
+         pdu = NULL;
+    }
+    else
+    {
+        QMessageBox::warning(this,"Group Chat ","send msg is NULL");
+    }
+}
+
+
+QListWidget* Friend::getFriendList()
+{
+    return m_pFriendListWidget;
+}

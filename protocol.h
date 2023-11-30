@@ -24,6 +24,22 @@ typedef unsigned int uint;
 #define ADD_FRIEND_REFUSE "add friend refuse"
 
 #define DEL_FRIEND_OK "delete friend ok"
+#define DIR_NO_EXIST "cur dir not exist"
+#define FILE_NAME_EXIST "file name exist"
+
+#define DEL_DIR_OK "delete dir ok"
+#define DEL_DIR_FAILED "delete dir failed:is file"
+
+#define RENAME_FILE_OK "rename file ok"
+#define RENAME_FILE_FAILED "rename file failed"
+
+#define ENTER_DIR_FAILED "enter dir failed:a file"
+
+#define DEL_FILE_OK "delete file ok"
+#define DEL_FILE_FAILED "delete file failed:is dir"
+
+#define UPLOAD_FILE_OK "upload file ok"
+#define UPLOAD_FILE_FAILED "upload file failed"
 
 enum ENUM_MSG_TYPE
 {
@@ -61,8 +77,47 @@ enum ENUM_MSG_TYPE
     ENUM_MSG_TYPE_GROUP_CHAT_REQUEST,//群聊请求
     ENUM_MSG_TYPE_GROUP_CHAT_RESPONSE,
 
+    ENUM_MSG_TYPE_CREATE_DIR_REQUEST,//创建dir请求
+    ENUM_MSG_TYPE_CREATE_DIR_RESPONSE,
+
+    ENUM_MSG_TYPE_FLUSH_FILE_REQUEST,//刷新文件请求
+    ENUM_MSG_TYPE_FLUSH_FILE_RESPONSE,
+
+    ENUM_MSG_TYPE_DEL_DIR_REQUEST,//删除目录请求
+    ENUM_MSG_TYPE_DEL_DIR_RESPONSE,
+
+    ENUM_MSG_TYPE_RENAME_FILE_REQUEST,  //重命名请求
+    ENUM_MSG_TYPE_RENAME_FILE_RESPONSE,
+
+    ENUM_MSG_TYPE_ENTER_DIR_REQUEST,    //进入文件夹请求
+    ENUM_MSG_TYPE_ENTER_DIR_RESPONSE,
+
+    ENUM_MSG_TYPE_DEL_FILE_REQUEST, //删除文件请求
+    ENUM_MSG_TYPE_DEL_FILE_RESPONSE,
+
+    ENUM_MSG_TYPE_UPLOAD_FILE_REQUEST,//上传文件请求
+    ENUM_MSG_TYPE_UPLOAD_FILE_RESPONSE,
+
+    ENUM_MSG_TYPE_DOWNLOAD_FILE_REQUEST,//下载请求
+    ENUM_MSG_TYPE_DOWNLOAD_FILE_RESPONSE,
+
+    ENUM_MSG_TYPE_SHARE_FILE_REQUEST, //共享文件请求
+    ENUM_MSG_TYPE_SHARE_FILE_RESPONSE, //共享文件回复
+
+    ENUM_MSG_TYPE_SHARE_FILE_NOTE,
+    ENUM_MSG_TYPE_SHARE_FILE_NOTE_RESPONSE,
+
+    ENUM_MSG_TYPE_MOVE_FILE_REQUEST, //移动文件请求
+    ENUM_MSG_TYPE_MOVE_FILE_RESPONSE, //移动文件回复
+
     ENUM_MSG_TYPE_MAX = 0x00FFFFFF
 } ;
+
+struct FileInfo
+{
+    char caFileName[32];
+    int iFileType;
+};
 
 struct PDU{
     uint uiPDULen;  //一次数据的总长，总的协议数据单元大小

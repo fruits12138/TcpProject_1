@@ -43,3 +43,8 @@ Friend *OpeWidget::getFriend()
 {
     return m_pFriend;
 }
+
+Book *OpeWidget::getBook()
+{
+    return m_pBook;
+}

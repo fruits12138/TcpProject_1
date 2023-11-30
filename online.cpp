@@ -25,8 +25,6 @@ void Online::showUsr(PDU *pdu)
 
 }
 
-
-
 Online::~Online()
 {
     delete ui;

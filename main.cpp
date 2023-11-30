@@ -6,6 +6,7 @@
 //#include "friend.h"
 //#include "opewidget.h"
 //#include <online.h>
+//#include <sharefile.h>
 
 int main(int argc, char *argv[])
 {
@@ -32,6 +33,8 @@ int main(int argc, char *argv[])
 //    w.show();
 //    TcpClient w;
 //    w.show();
+//    ShareFile file;
+//    file.show();
     TcpClient::getInstance().show();
 
     return a.exec();

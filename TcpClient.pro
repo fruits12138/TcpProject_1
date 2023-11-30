@@ -16,7 +16,8 @@ SOURCES += \
     online.cpp \
     friend.cpp \
     book.cpp \
-    privatechat.cpp
+    privatechat.cpp \
+    sharefile.cpp
 
 HEADERS += \
     protocol.h \
@@ -25,7 +26,8 @@ HEADERS += \
     online.h \
     friend.h \
     book.h \
-    privatechat.h
+    privatechat.h \
+    sharefile.h
 
 FORMS += \
     tcpclient.ui \
@@ -43,4 +45,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
-    config.qrc
+    config.qrc \
+    filetype.qrc
